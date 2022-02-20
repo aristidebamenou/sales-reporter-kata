@@ -6,7 +6,7 @@ class Program
   # lots of comments!
   def main(*args)
     # add a title to our app
-    puts '=== Sales Viewer ==='
+    output = "=== Sales Viewer ===\n"
     # extract the command name from the args
     command = args.length.positive? ? args[0] : 'unknown'
     file = args.length >= 2 ? args[1] : './data.csv'
@@ -29,19 +29,19 @@ class Program
       end
 
       header_string = column_infos.map { |x| x[:name].gsub("\n", '').rjust(16) }.join(' | ')
-      puts "+#{Array.new(header_string.length + 2, '-').join('')}+"
-      puts "| #{header_string} |"
-      puts "+#{Array.new(header_string.length + 2, '-').join('')}+"
-
+      output += <<~END
+      +#{Array.new(header_string.length + 2, '-').join('')}+
+      | #{header_string} |
+      +#{Array.new(header_string.length + 2, '-').join('')}+
+      END
       # then add each line to the table
       other_lines.each do |line|
         # extract columns from our csv line and add all these cells to the line
         cells = line.split(',')
         table_line = line.gsub("\n", '').split(',').map { |x| x.rjust(16) }.join(' | ')
-        puts "| #{table_line} |"
+        output += "| #{table_line} |\n"
       end
-      puts "+#{Array.new(header_string.length + 2, '-').join('')}+"
-
+      output += "+#{Array.new(header_string.length + 2, '-').join('')}+\n"
       # if command is report
     elsif command == "report"
       # get all the lines without the header in the first line
@@ -67,21 +67,21 @@ class Program
       number4 = (number3 / number1).round(2)
       # we compute the average item price sold
       number5 = (number3 / number2).round(2)
-      puts "+#{Array.new(45, '-').join('')}+"
-      puts "| #{'Number of sales'.rjust(30)} | #{number1.to_s.rjust(10)} |"
-      puts "| #{'Number of clients'.rjust(30)} | #{clients.length.to_s.rjust(10)} |"
-      puts "| #{'Total items sold'.rjust(30)} | #{number2.to_s.rjust(10)} |"
-      puts "| #{'Total sales amount'.rjust(30)} | #{number3.round(2).to_s.rjust(10)} |"
-      puts "| #{'Average amount/sale'.rjust(30)} | #{number4.to_s.rjust(10)} |"
-      puts "| #{'Average item price'.rjust(30)} | #{number5.to_s.rjust(10)} |"
-      puts "+#{Array.new(45, '-').join('')}+"
+      output += "+#{Array.new(45, '-').join('')}+\n"
+      output += "| #{'Number of sales'.rjust(30)} | #{number1.to_s.rjust(10)} |\n"
+      output += "| #{'Number of clients'.rjust(30)} | #{clients.length.to_s.rjust(10)} |\n"
+      output += "| #{'Total items sold'.rjust(30)} | #{number2.to_s.rjust(10)} |\n"
+      output += "| #{'Total sales amount'.rjust(30)} | #{number3.round(2).to_s.rjust(10)} |\n"
+      output += "| #{'Average amount/sale'.rjust(30)} | #{number4.to_s.rjust(10)} |\n"
+      output += "| #{'Average item price'.rjust(30)} | #{number5.to_s.rjust(10)} |\n"
+      output += "+#{Array.new(45, '-').join('')}+\n"
     else
-      puts "[ERR] your command is not valid "
-      puts "Help: "
-      puts "    - [print]  : show the content of our commerce records in data.csv"
-      puts "    - [report] : show a summary from data.csv records "
+      output += "[ERR] your command is not valid\n"
+      output += "Help: \n"
+      output += "    - [print]  : show the content of our commerce records in data.csv\n"
+      output += "    - [report] : show a summary from data.csv records\n"
     end
+    puts output
+    output
   end
 end
-
-Program.new.main 'print'
